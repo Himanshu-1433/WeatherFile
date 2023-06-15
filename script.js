@@ -37,6 +37,7 @@ function updateWeatherData(data) {
     let location = document.createElement("div");
     let temperature = document.createElement("div");
     let description = document.createElement("div");
+    let time = document.createElement("p");
     
     let icon = document.createElement("div");
     icon.className = "icon";
@@ -51,11 +52,13 @@ function updateWeatherData(data) {
     location.innerHTML = locationName;
     temperature.innerHTML = temperatureMet;
     description.innerHTML = descriptionDetails;
+    time.innerHTML = item.time;
 
     divContainer.appendChild(location);
     divContainer.appendChild(description);
     divContainer.appendChild(temperature);
     divContainer.appendChild(icon);
+    divContainer.appendChild(time);
 
     weatherInfo.appendChild(divContainer);
   });
@@ -68,31 +71,34 @@ function saveData(locationData, data) {
       if(JSON.parse(storedData).length > 10){
         let weatherData = {
           location: locationData,
-          data: data
+          data: data,
+          time: new Date()
         };
         let historyArray = JSON.parse(storedData);
         historyArray.push(weatherData);
         let newHistoryArray = historyArray.slice(1);
         localStorage.setItem('weatherData', JSON.stringify(newHistoryArray));
-        updateWeatherData(newHistoryArray);
+        updateWeatherData(newHistoryArray.reverse());
         location.reload();
       }
       else {
         let weatherData = {
           location: locationData,
-          data: data
+          data: data,
+          time: new Date()
         };
         let historyArray = JSON.parse(storedData);
         console.log(historyArray);
         historyArray.push(weatherData);
         localStorage.setItem('weatherData', JSON.stringify(historyArray));
-        updateWeatherData(historyArray);
+        updateWeatherData(historyArray.reverse());
         location.reload()      }
     }
     else{
       let weatherDataArrayLocalStorage = [{
         location: locationData,
-        data: data
+        data: data,
+        time: new Date()
       }];
       localStorage.setItem('weatherData', JSON.stringify(weatherDataArrayLocalStorage));
       updateWeatherData(weatherDataArrayLocalStorage);
@@ -102,10 +108,11 @@ function saveData(locationData, data) {
   else{
     let weatherDataArrayLocalStorage = [{
       location: locationData,
-      data: data
+      data: data,
+      time: new Date()
     }];
     localStorage.setItem('weatherData', JSON.stringify(weatherDataArrayLocalStorage));
-    updateWeatherData(weatherDataArrayLocalStorage);
+    updateWeatherData(weatherDataArrayLocalStorage.reverse());
     location.reload();
   }
 }
@@ -116,7 +123,7 @@ function loadData() {
   const storedData = localStorage.getItem('weatherData'); 
   if (storedData) {
     const weatherData = JSON.parse(storedData);
-    updateWeatherData(weatherData);
+    updateWeatherData(weatherData.reverse());
   }
   else{
     console.log("No Data Found");
